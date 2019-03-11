@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlxh.just.dao.AdminMapper">
+  <resultMap id="BaseResultMap" type="com.wlxh.just.model.Admin">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="role" jdbcType="INTEGER" property="role" />
+    <result column="type_id" jdbcType="INTEGER" property="typeId" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="company" jdbcType="VARCHAR" property="company" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, role, type_id, username,  name, mobile, company
+  </sql>
+    <update id="updAdmin">
+      update admin set type_id = #{typeId,jdbcType=INTEGER},
+      role=#{role,jdbcType=BIT}, username=#{username,jdbcType=VARCHAR},
+      name=#{name,jdbcType=VARCHAR},mobile=#{mobile,jdbcType=VARCHAR},
+      company=#{company,jdbcType=VARCHAR}
+      where (id = #{id,jdbcType=INTEGER});
+    </update>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from admin
+    where id = #{id,jdbcType=INTEGER};
+  </select>
+
+
+  <insert id="insertSelective" parameterType="com.wlxh.just.model.Admin">
+    insert into admin (role,type_id,username,password,name,mobile,company)
+    values
+    (
+    #{role,jdbcType=BIT},#{typeId,jdbcType=INTEGER},#{username,jdbcType=VARCHAR},
+    #{password,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{mobile,jdbcType=VARCHAR},
+    #{company,jdbcType=VARCHAR}
+    );
+  </insert>
+
+  <select id="seladmin" resultMap="BaseResultMap" parameterType="com.wlxh.just.model.Admin">
+    select id,
+    <if test="username!=null">
+         password,
+    </if>
+    role,type_id,username,name,mobile,company from admin
+    <if test="username!=null">
+      where (username=#{username,jdbcType=VARCHAR})
+    </if>
+    <if test="id!=null">
+      where (id=#{id,jdbcType=INTAGER})
+    </if>
+    <if test="typeId!=null or role!=null or (company!='' and company!=null)">
+      where
+      <trim prefix="(" suffix=")" suffixOverrides="and">
+        <if test="typeId!=null">
+          type_id=#{typeId,jdbcType=INTEGER} and
+        </if>
+        <if test="role!=null" >
+          role=#{role,jdbcType=INTEGER} and
+        </if>
+        <if test="company!=null and company!=''" >
+          company=#{company,jdbcType=VARCHAR}
+        </if>
+      </trim>
+    </if>
+;
+  </select>
+
+
+</mapper>

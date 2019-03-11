@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wlxh.just.dao.PartAddMapper" >
+  <resultMap id="BaseResultMap" type="com.wlxh.just.model.PartAdd" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="part_id" property="partId" jdbcType="INTEGER" />
+    <result column="admin_id" property="adminId" jdbcType="INTEGER" />
+    <result column="number" property="number" jdbcType="INTEGER" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    <collection property="admin" ofType="com.wlxh.just.model.Admin" column="admin">
+      <result column="username" property="username" />
+    </collection>
+    <collection property="part" ofType="com.wlxh.just.model.Part" column="part">
+      <result column="name" property="name" />
+    </collection>
+  </resultMap>
+  <insert id="inspartadd"  parameterType="com.wlxh.just.model.PartAdd">
+    insert into part_add
+    (part_id,admin_id,number)
+    values
+    (
+    #{partId,jdbcType=INTEGER},
+    #{adminId,jdbcType=INTEGER},
+    #{number,jdbcType=INTEGER}
+    )
+  </insert>
+
+  <select id="selbypartadd" resultMap="BaseResultMap" parameterType="com.wlxh.just.model.PartAdd">
+    select pa.id,pa.number,a.username,p.name,pa.created_at
+    from part_add pa
+    LEFT JOIN admin a ON a.id=pa.admin_id
+    LEFT JOIN part p ON p.id=pa.part_id
+    <if test="partId!=null or amdinId !=null">
+      where
+      <trim prefix="(" suffix=")" suffixOverrides="and">
+        <if test="partId!=null">
+         pa.part_id=#{partId,jdbcType=INTEGER} and
+        </if>
+        <if test="adminId!=null">
+          pa.admin_id=#{adminId,jdbcType=INTEGER}
+        </if>
+      </trim>
+    </if>
+  </select>
+
+</mapper>

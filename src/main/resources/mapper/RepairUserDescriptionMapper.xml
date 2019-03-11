@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wlxh.just.dao.RepairUserDescriptionMapper" >
+  <resultMap id="BaseResultMap" type="com.wlxh.just.model.RepairUserDescription" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="type_id" property="typeId" jdbcType="INTEGER" />
+    <result property="description" column="description" jdbcType="VARCHAR"/>
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    <collection property="type" column="type" ofType="com.wlxh.just.model.Type">
+      <result property="name" column="name" jdbcType="VARCHAR"/>
+    </collection>
+  </resultMap>
+  <insert id="ins" parameterType="com.wlxh.just.model.RepairUserDescription">
+    insert into repair_user_description
+     (type_id,description)
+    values
+    (#{typeId,jdbcType=INTEGER},#{description,jdbcType=VARCHAR});
+  </insert>
+  <update id="updpud" parameterType="com.wlxh.just.model.RepairUserDescription" >
+    UPDATE `repair_user_description` SET `description`=#{description,jdbcType=VARCHAR} WHERE (`id`=#{id,jdbcType=INTEGER});
+  </update>
+
+  <select id="selectBytypeId" resultType="com.wlxh.just.model.RepairUserDescription" parameterType="com.wlxh.just.model.Type">
+    SELECT
+    r.id,
+    r.description
+    FROM
+    `repair_user_description` r
+    <if test="id!=null">
+      WHERE
+      (r.id = #{id,jdbcType=INTEGER})
+    </if>
+    ;
+  </select>
+  <select id="selByid" resultMap="BaseResultMap" parameterType="com.wlxh.just.model.RepairUserDescription">
+    select ru.id,ru.description,t.name
+    from
+    `repair_user_description` ru
+    left join type  t ON ru.type_id=t.id
+    <if test="typeId!=null">
+      where (ru.type_id=#{typeId,jdbcType=INTEGER})
+    </if>
+    ;
+  </select>
+
+</mapper>

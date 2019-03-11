@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wlxh.just.dao.PartMapper" >
+  <resultMap id="BaseResultMap" type="com.wlxh.just.model.Part" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="number" property="number" jdbcType="INTEGER" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <insert id="insall" parameterType="com.wlxh.just.model.Part" useGeneratedKeys="true" keyProperty="id">
+    insert into part
+    (name,number)
+     values
+     (
+      #{name,jdbcType=VARCHAR},
+      #{number,jdbcType=INTEGER}
+     )
+  </insert>
+  <update id="updpart" parameterType="com.wlxh.just.model.Part" useGeneratedKeys="true" keyProperty="id">
+    update part
+    set number=#{number,jdbcType=INTEGER}
+    where (name=#{name,jdbcType=VARCHAR});
+  </update>
+  <select id="getall" resultType="com.wlxh.just.model.Part" parameterType="com.wlxh.just.model.Part" >
+   SELECT * FROM `part`
+    <if test="name!=null">
+      where
+   <trim prefix="(" suffix=")" suffixOverrides=",">
+     name=#{name,jdbcType=VARCHAR}
+   </trim>
+    </if>
+  ;
+  </select>
+</mapper>

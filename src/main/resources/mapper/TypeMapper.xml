@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wlxh.just.dao.TypeMapper" >
+  <resultMap id="BaseResultMap" type="com.wlxh.just.model.Type" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="auto_complete_hours" property="autoCompleteHours" jdbcType="INTEGER" />
+    <result column="auto_complete_stars" property="autoCompleteStars" jdbcType="INTEGER" />
+    <result column="allow_user_create" property="allowUserCreate" jdbcType="INTEGER" />
+    <result column="need_user_info" property="needUserInfo" jdbcType="INTEGER" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+<collection property="repairUserDescription" column="repairUserDescription" ofType="com.wlxh.just.model.RepairUserDescription">
+  <result property="description" column="description" />
+</collection>
+  </resultMap>
+    <insert id="instype">
+      insert into type
+      (name,auto_complete_hours,auto_complete_stars,allow_user_create,need_user_info)
+       values
+       (#{name,jdbcType=VARCHAR},#{autoCompleteHours,jdbcType=INTEGER},
+       #{autoCompleteStars,jdbcType=INTEGER},#{allowUserCreate,jdbcType=BIT},
+       #{needUserInfo,jdbcType=BIT}
+       );
+    </insert>
+  <update id="updtype">
+    update type set name = #{name,jdbcType=VARCHAR},
+    auto_complete_hours= #{autoCompleteHours,jdbcType=INTEGER},
+    auto_complete_stars=#{autoCompleteStars,jdbcType=INTEGER},
+    allow_user_create=#{allowUserCreate,jdbcType=BIT},
+      need_user_info =#{needUserInfo,jdbcType=BIT}
+    where (id=#{id,jdbcType=INTEGER});
+  </update>
+  <select id="seltypeall" resultMap="BaseResultMap">
+    SELECT * FROM `type`;
+  </select>
+  <select id="selbytype" resultMap="BaseResultMap" parameterType="com.wlxh.just.model.Type"
+          resultType="com.wlxh.just.model.Type">
+    select
+    t.id,t.name,ru.description
+    from type t
+    LEFT JOIN repair_user_description ru ON t.id=ru.type_id
+    <if test="id!=null">
+      where (t.id=#{id,jdbcType=INTEGER})
+    </if>
+   ;
+  </select>
+  <select id="seltypebyid" resultMap="BaseResultMap">
+    select * from type where (id=#{id,jdbcType=INTEGER});
+  </select>
+
+</mapper>

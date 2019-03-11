@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wlxh.just.dao.RepairMapper" >
+  <resultMap id="BaseResultMap" type="com.wlxh.just.model.Repair" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="type_id" property="typeId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="user_mobile" property="userMobile" jdbcType="VARCHAR" />
+    <result column="location_id" property="locationId" jdbcType="INTEGER" />
+    <result column="user_room" property="userRoom" jdbcType="VARCHAR" />
+    <result column="admin_id" property="adminId" jdbcType="INTEGER" />
+    <result column="admin_picture" property="adminPicture" jdbcType="VARCHAR" />
+    <result column="user_star" property="userStar" jdbcType="BIT" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="accepted_at" property="acceptedAt" jdbcType="TIMESTAMP" />
+    <result column="repaired_at" property="repairedAt" jdbcType="TIMESTAMP" />
+    <result column="completed_at" property="completedAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    <result column="admin_description" property="adminDescription" />
+
+    <collection property="admin" ofType="com.wlxh.just.model.Admin" column="admin">
+      <result column="role" jdbcType="INTEGER" property="role" />
+      <result column="type_id" jdbcType="INTEGER" property="typeId" />
+      <result column="username" jdbcType="VARCHAR" property="username" />
+      <result column="name" jdbcType="VARCHAR" property="name" />
+      <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+      <result column="company" jdbcType="VARCHAR" property="company" />
+      <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+      <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    </collection>
+
+  <collection property="location" ofType="com.wlxh.just.model.Location" column="location">
+    <result column="first" property="first" jdbcType="VARCHAR" />
+    <result column="second" property="second" jdbcType="VARCHAR" />
+  </collection>
+    <collection property="type" ofType="com.wlxh.just.model.Type" column="type">
+      <result column="name" property="name" jdbcType="VARCHAR"/>
+    </collection>
+  </resultMap>
+    <insert id="insRepair">
+        insert into repair
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            status,type_id,
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="userMobile != null">
+                user_mobile,
+            </if>
+            location_id,user_room,user_description,
+            <if test="adminId != null">
+                admin_id,
+            </if>
+            <if test="adminPicture != null">
+                admin_picture,
+            </if>
+            <if test="adminDescription != null">
+                admin_description,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{status,jdbcType=BIT},#{typeId,jdbcType=BIT},
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userMobile != null">
+                #{userMobile,jdbcType=VARCHAR},
+            </if>
+            #{locationId,jdbcType=INTEGER},#{userRoom,jdbcType=VARCHAR},#{userDescription,jdbcType=VARCHAR},
+            <if test="adminId != null">
+                #{adminId,jdbcType=INTEGER},
+            </if>
+            <if test="adminPicture != null">
+                #{adminPicture,jdbcType=VARCHAR},
+            </if>
+            <if test="adminDescription != null">
+                #{adminDescription,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selbycond" resultMap="BaseResultMap" parameterType="com.wlxh.just.model.Repair">
+    SELECT
+	r.id,
+	r.`status`,
+	r.user_name,
+	r.user_mobile,
+	r.user_room,
+	user_description,
+	r.admin_description,
+	t.`name`,
+	l. `first`,
+	l. `second`,
+	r.accepted_at,
+	r.completed_at,
+	r.created_at
+FROM
+	`repair` r
+LEFT JOIN admin a ON a.id = r.admin_id
+LEFT JOIN type t ON t.id = r.type_id
+LEFT JOIN location l ON l.id = r.location_id
+    <if test=" typeIds != null" >
+      where
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+        r.status in
+      <foreach item="item" index="index" collection="typeIds"
+               open="(" separator="," close=")">
+        #{item,jdbcType=INTEGER}
+      </foreach>
+
+
+    <if test=" typeId != null" >
+      and r.type_id = #{typeId,jdbcType=BIT}
+    </if>
+    <if test=" userId != null and userId !=''" >
+     and  r.user_id = #{userId,jdbcType=VARCHAR}
+    </if>
+    <if test="userMobile != null and userMobile != ''" >
+     and  r.user_mobile = #{userMobile,jdbcType=VARCHAR}
+    </if>
+    <if test=" locationId != null" >
+     and  r.location_id = #{locationId,jdbcType=INTEGER}
+    </if>
+    <if test=" userRoom != null and userRoom !=''" >
+      and r.user_room = #{userRoom,jdbcType=VARCHAR}
+    </if>
+    </trim>
+    </if>
+;
+  </select>
+</mapper>

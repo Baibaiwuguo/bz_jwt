@@ -1,0 +1,25 @@
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.wlxh.just.model
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+server:
+  port: 8888
+spring:
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password:
+  datasource:
+    name: test
+    url: jdbc:mysql://127.0.0.1:3306/bz?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: just
+    type: com.alibaba.druid.pool.DruidDataSource
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    dao: debug
+    org:
+      mybatis: debug

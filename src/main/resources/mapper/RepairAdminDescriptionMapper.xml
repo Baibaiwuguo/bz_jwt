@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wlxh.just.dao.RepairAdminDescriptionMapper" >
+  <resultMap id="BaseResultMap" type="com.wlxh.just.model.RepairAdminDescription" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="repair_user_description_id" property="repairUserDescriptionId" jdbcType="INTEGER" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.wlxh.just.model.RepairAdminDescription" extends="BaseResultMap" >
+    <result column="description" property="description" jdbcType="LONGVARCHAR" />
+  </resultMap>
+    <insert id="insrad" parameterType="com.wlxh.just.model.RepairAdminDescription">
+      insert into repair_admin_description (repair_user_description_id,description) values
+      (#{repairUserDescriptionId,jdbcType=INTEGER},#{description,jdbcType=VARCHAR});
+    </insert>
+  <update id="updrad" parameterType="com.wlxh.just.model.RepairAdminDescription">
+    update repair_admin_description
+    set description = #{description,jdbcType=VARCHAR}
+    where (id=#{id,jdbcType=INTEGER});
+  </update>
+  <select id="selByDescriptionId" resultType="com.wlxh.just.model.RepairAdminDescription" parameterType="com.wlxh.just.model.RepairUserDescription">
+    select * from repair_admin_description r
+    <if test="id!=null">
+      where
+      (r.repair_user_description_id=#{id,jdbcType=INTEGER})
+    </if>
+    ;
+  </select>
+
+</mapper>
